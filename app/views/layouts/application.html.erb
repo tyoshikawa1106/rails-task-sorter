@@ -5,10 +5,23 @@
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
+  <!-- bootstrap sf1 -->
+  <%= javascript_include_tag "bootstrap-sf1/js/docs.js" %>
+  <%= stylesheet_link_tag "bootstrap-sf1/dist/css/bootstrap.css" %>
+  <%= stylesheet_link_tag "bootstrap-sf1/dist/css/docs.min.css" %>
+  <style>pre code { background: transparent; }</style>
 </head>
 <body>
 
-<%= yield %>
+<%= render 'header' %>
+
+<div style="min-height: 520px;">
+  <%= yield %>
+</div>
+
+<%= render 'footer' %>
+
+<%= yield :scripts %>
 
 </body>
 </html>

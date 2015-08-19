@@ -1,4 +1,10 @@
 TaskSorterApp::Application.routes.draw do
+
+  resources :tasks, only: [:create, :destroy, :edit, :update]
+
+  match '/cards', to: 'tasks#cards', via: 'get'
+  root "tasks#index"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

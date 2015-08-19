@@ -1,0 +1,108 @@
+<!-- Page Header -->
+<%= render partial: 'page_header' , locals: { title: "Task Cards" } %>
+
+<div class="container tasksorter">
+  <!-- Navi Link -->
+  <nav>
+    <ul>
+      <li class="selected">
+        <a href="#" class="date">日付順</a>
+      </li>
+      <li>
+        <a href="#" class="name">タイトル順</a>
+      </li>
+    </ul>
+  </nav>
+
+  <div id="taskArea" class="taskList floatClear">
+    <ul>
+      <% @tasks.each do |task| %>
+        <li>
+          <div class="cards each">
+            <div class="caption">
+              <p data-key-value="<%= task.activity_date %>">
+                <%= task.activity_date %>
+              </p>
+              <p data-key-value="<%= task.subject %>">
+                <%= task.subject %>
+              </p>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+
+<% content_for :scripts do %>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    var todoCards = [];
+    var currentSort = 0;
+
+    //全てのToDoレコードを配列に入れ最初の演出を行う
+    $(".each").each(function (i) {
+      todoCards.push(this);
+      $(this).stop().delay(300 + i * 200).animate({"opacity": "1"}, 800);
+    });
+
+    /**
+     * ソートしてフィルタリング
+     */
+    function sortAndFilter() {
+        //currentSort番目のpのカスタムデータ属性でソート
+        todoCards.sort(function (a, b) {
+
+          var aData = $(a).find("p")[currentSort].dataset["keyValue"];
+          var bData = $(b).find("p")[currentSort].dataset["keyValue"];
+
+          if (aData < bData) return -1;
+          if (aData > bData) return 1;
+          return 0;
+        });
+
+        // 全て非表示（DOMから外す）
+        $(".each").remove();
+        // 透明な状態でリストに追加
+        for (var i = 0; i < todoCards.length; i++) {
+          $("#taskArea").append(todoCards[i]);
+          $(todoCards[i]).css({"opacity": 0});            
+        }
+      //表示
+      $("#taskArea .each").each(function (i) {
+        $(this).stop().delay(i * 200).animate({"opacity": "1"}, 800);
+      });
+    }
+
+    //ナビをクリックした時の処理
+    $("nav a").on({
+      "click": function (e) {
+        e.preventDefault();
+
+        //クリックされたナビによって処理を分岐
+        switch ($(this).attr("class")) {
+
+          //日付順ソート
+          case "date":
+            currentSort = 0;
+            break;
+          // タイトル順ソート
+          case "name":
+            currentSort = 1;
+            break;
+        }
+
+        sortAndFilter();
+
+        //枠をつけかえる
+        $(this).parents("ul").find("li").removeClass("selected");
+        $(this).parent().addClass("selected");
+
+        return false;
+      }
+    });
+  });
+</script>
+<% end %>
